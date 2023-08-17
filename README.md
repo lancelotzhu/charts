@@ -8,7 +8,6 @@ helm devops charts
 
 ```bash
 cd docs
-helm pakcage ../devops/hadoop/
-helm package ../devops/hadoop-ha/
+helm package ../devops/*/
 helm repo index . --url https://lancelotzhu.github.io/charts/
 ```
