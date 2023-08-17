@@ -1,22 +1,24 @@
 apiVersion: v1
 entries:
-  hadoop:
+  hadoop-ha:
   - apiVersion: v1
     appVersion: 3.3.9
-    created: "2023-08-17T16:15:24.698221+01:00"
+    created: "2023-08-17T17:06:23.1456016+08:00"
     description: The Apache Hadoop software library is a framework that allows for
       the distributed processing of large data sets across clusters of computers using
       simple programming models.
-    digest: 5e655a09f2e502dfaf6350333698e6969c796ff4fefa15cc6e1b0b4f82f9e05e
+    digest: 7a714ed5aaa50913f714148f32906e27028f406544c04a3348882a210bf9c2d9
     home: https://hadoop.apache.org/
     icon: http://hadoop.apache.org/images/hadoop-logo.jpg
     maintainers:
     - email: lancelot_zhu@163.com
       name: lancelotzhu
       url: http://github.com/lancelotzhu
-    name: hadoop
+    name: hadoop-ha
     sources:
-    - https://github.com/lancelotzhu/charts
+    - https://github.com/lancelotzhu/charts/tree/main/devops/hadoop-ha
     - https://github.com/apache/hadoop
+    urls:
+    - https://lancelotzhu.github.io/charts/hadoop-ha-1.0.0.tgz
     version: 1.0.0
-generated: "2023-08-17T16:15:24.697105+01:00"
+generated: "2023-08-17T17:06:23.1445871+08:00"
