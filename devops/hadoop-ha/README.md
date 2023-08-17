@@ -3,7 +3,7 @@
 This chart is modified from [pfisterer/apache-hadoop-helm](https://github.com/pfisterer/apache-hadoop-helm) and has been updated to:
 
 - supprot hadoop high availability cluster.
-- upgrade hadoop version from 3.3.2 to 3.3.9.
+- upgrade hadoop version from 3.3.2 to 3.3.6.
 
 ## Chart Details
 
@@ -23,9 +23,9 @@ The following table lists the configurable parameters of the Hadoop chart and th
 | Parameter                              | Description                                                    | Default                                                           |
 | -------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `image.repository`                     | Hadoop image                                                   | `lancelotzhu/hadoop-ha`                                           |
-| `image.tag`                            | Hadoop image tag                                               | `3.3.9`                                                           |
+| `image.tag`                            | Hadoop image tag                                               | `3.3.6`                                                           |
 | `imagee.pullPolicy`                    | Pull policy for the images                                     | `IfNotPresent`                                                    |
-| `hadoopVersion`                        | Version of hadoop libraries being used                         | `3.3.9`                                                           |
+| `hadoopVersion`                        | Version of hadoop libraries being used                         | `3.3.6`                                                           |
 | `antiAffinity`                         | Pod antiaffinity, `hard` or `soft`                             | `hard`                                                            |
 | `hdfs.nameNode.pdbMinAvailable`        | PDB for HDFS NameNode                                          | `1`                                                               |
 | `hdfs.nameNode.resources`              | resources for the HDFS NameNode                                | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m`    |
@@ -59,7 +59,7 @@ This image is modified from [pfisterer/apache-hadoop-helm](https://github.com/pf
 
 ```bash
 # Set version
-HADOOP_VERSION=3.3.9
+HADOOP_VERSION=3.3.6
 
 # Build
 docker buildx build --push --platform "linux/arm64,linux/amd64" -t lancelotzhu/hadoop-ha:latest -t lancelotzhu/hadoop-ha:$HADOOP_VERSION .
@@ -72,4 +72,4 @@ docker buildx build --push --platform "linux/arm64,linux/amd64" -t lancelotzhu/h
 Version 1.0.0
 - Initial release of this chart
 - Use multi-architecture base image
-- Apache Hadoop 3.3.9
+- Apache Hadoop 3.3.6

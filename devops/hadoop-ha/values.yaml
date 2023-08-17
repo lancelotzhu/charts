@@ -1,10 +1,10 @@
 image:
   repository: lancelotzhu/hadoop-ha
-  tag: 3.3.9
+  tag: 3.3.6
   pullPolicy: IfNotPresent
 
 # The version of the hadoop libraries being used in the image.
-hadoopVersion: 3.3.9
+hadoopVersion: 3.3.6
 logLevel: INFO
 
 # Select antiAffinity as either hard or soft, default is soft

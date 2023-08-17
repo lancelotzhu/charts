@@ -2,7 +2,7 @@ apiVersion: v1
 entries:
   hadoop-ha:
   - apiVersion: v1
-    appVersion: 3.3.9
+    appVersion: 3.3.6
     created: "2023-08-17T17:06:23.1456016+08:00"
     description: The Apache Hadoop software library is a framework that allows for
       the distributed processing of large data sets across clusters of computers using
