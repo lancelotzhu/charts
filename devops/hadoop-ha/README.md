@@ -13,7 +13,7 @@ To install the chart with the release name `hadoop-ha`:
 
 ```bash
 helm repo add lancelotzhu https://lancelotzhu.github.io/charts/
-helm install hadoop-ha devops/hadoop-ha
+helm install hadoop-ha lancelotzhu/hadoop-ha
 ```
 
 ## Configuration
