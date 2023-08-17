@@ -70,6 +70,7 @@ docker buildx build --push --platform "linux/arm64,linux/amd64" -t lancelotzhu/h
 ## Changes
 
 Version 1.0.0
+
 - Initial release of this chart
 - Use multi-architecture base image
 - Apache Hadoop 3.3.6
