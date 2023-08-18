@@ -22,7 +22,7 @@ The following table lists the configurable parameters of the Hadoop chart and th
 
 | Parameter                              | Description                                                    | Default                                                           |
 | -------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `image.repository`                     | Hadoop image                                                   | `lancelotzhu/hadoop-ha`                                           |
+| `image.repository`                     | Hadoop image                                                   | `lancelotzhu/hadoop`                                           |
 | `image.tag`                            | Hadoop image tag                                               | `3.3.6`                                                           |
 | `imagee.pullPolicy`                    | Pull policy for the images                                     | `IfNotPresent`                                                    |
 | `hadoopVersion`                        | Version of hadoop libraries being used                         | `3.3.6`                                                           |
@@ -62,7 +62,7 @@ This image is modified from [pfisterer/apache-hadoop-helm](https://github.com/pf
 HADOOP_VERSION=3.3.6
 
 # Build
-docker buildx build --push --platform "linux/arm64,linux/amd64" -t lancelotzhu/hadoop-ha:latest -t lancelotzhu/hadoop-ha:$HADOOP_VERSION .
+docker buildx build --push --platform "linux/arm64,linux/amd64" -t lancelotzhu/hadoop:latest -t lancelotzhu/hadoop:$HADOOP_VERSION .
 ```
 
 ---

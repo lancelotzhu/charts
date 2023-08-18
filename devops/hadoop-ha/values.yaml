@@ -1,5 +1,5 @@
 image:
-  repository: lancelotzhu/hadoop-ha
+  repository: lancelotzhu/hadoop
   tag: 3.3.6
   pullPolicy: IfNotPresent
 
@@ -13,6 +13,8 @@ antiAffinity: "soft"
 hdfs:
   nameNode:
     pdbMinAvailable: 1
+
+    replicas: 3
 
     resources:
       requests:
@@ -30,7 +32,7 @@ hdfs:
     externalDataPortRangeStart: 50500
     externalHTTPPortRangeStart: 51000
 
-    replicas: 1
+    replicas: 3
 
     pdbMinAvailable: 1
 
@@ -49,6 +51,9 @@ yarn:
   resourceManager:
     pdbMinAvailable: 1
 
+    # The number of YARN ResourceManager instances.
+    replicas: 3
+
     resources:
       requests:
         memory: "256Mi"
@@ -61,7 +66,7 @@ yarn:
     pdbMinAvailable: 1
 
     # The number of YARN NodeManager instances.
-    replicas: 1
+    replicas: 3
 
     # Create statefulsets in parallel (K8S 1.7+)
     parallelCreate: false
