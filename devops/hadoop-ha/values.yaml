@@ -1,5 +1,5 @@
 image:
-  repository: lancelotzhu/hadoop
+  repository: lancelotzhu/hadoop-ha
   tag: 3.3.6
   pullPolicy: Always
 

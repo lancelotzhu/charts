@@ -22,7 +22,7 @@ The following table lists the configurable parameters of the Hadoop chart and th
 
 | Parameter                              | Description                                                    | Default                                                           |
 | -------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `image.repository`                     | Hadoop image                                                   | `lancelotzhu/hadoop`                                           |
+| `image.repository`                     | Hadoop image                                                   | `lancelotzhu/hadoop-ha`                                           |
 | `image.tag`                            | Hadoop image tag                                               | `3.3.6`                                                           |
 | `imagee.pullPolicy`                    | Pull policy for the images                                     | `Always`                                                    |
 | `hadoopVersion`                        | Version of hadoop libraries being used                         | `3.3.6`                                                           |
