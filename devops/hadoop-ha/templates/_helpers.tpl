@@ -21,3 +21,18 @@ Create chart name and version as used by the chart label.
 {{- define "hadoop.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "dfs.ha.namenodes.cluster" -}}
+{{- $nameNodeReplicaCount := int .Values.hdfs.nameNode.replicas -}}
+{{- $max := $nameNodeReplicaCount-1 -}}
+{{- range $i := until $nameNodeReplicaCount -}}
+{{- if $i eq max -}}
+{{- printf "nn%d" $i  -}}
+{{- else -}}
+{{- printf "nn%d," $i  -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

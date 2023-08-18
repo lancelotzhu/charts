@@ -1,0 +1,24 @@
+---
+# Source: hadoop-ha/templates/hdfs-dn-svc.yaml
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-hadoop-ha-hdfs-dn
+  labels:
+    app.kubernetes.io/name: hadoop-ha
+    helm.sh/chart: hadoop-ha-1.0.0
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: hdfs-dn
+spec:
+  ports:
+  - name: dfs
+    port: 9000
+    protocol: TCP
+  # - name: webhdfs
+  #   port: 9864
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: hadoop-ha
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: hdfs-dn

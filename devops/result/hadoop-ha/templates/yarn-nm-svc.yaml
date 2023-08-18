@@ -1,0 +1,25 @@
+---
+# Source: hadoop-ha/templates/yarn-nm-svc.yaml
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-hadoop-ha-yarn-nm
+  labels:
+    app.kubernetes.io/name: hadoop-ha
+    helm.sh/chart: hadoop-ha-1.0.0
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: yarn-nm
+spec:
+  ports:
+  - port: 8088
+    name: web
+  - port: 8082
+    name: web2
+  - port: 8042
+    name: api
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: hadoop-ha
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/component: yarn-nm

@@ -44,6 +44,19 @@ hdfs:
         memory: "2048Mi"
         cpu: "1000m"
 
+  journalNode:
+    pdbMinAvailable: 1
+
+    replicas: 3
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"  
+
   webhdfs:
     enabled: true
 
@@ -89,6 +102,12 @@ persistence:
     size: 50Gi
 
   dataNode:
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 200Gi
+
+  journalNode:
     enabled: false
     storageClass: "-"
     accessMode: ReadWriteOnce
