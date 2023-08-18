@@ -7,7 +7,6 @@ helm devops charts
 ## Packing the Chart
 
 ```bash
-cd docs
-helm package ../devops/*/
-helm repo index . --url https://lancelotzhu.github.io/charts/
+helm package ./devops/hadoop/ ./devops/hadoop-ha/ -d ./docs
+helm repo index ./docs --url https://lancelotzhu.github.io/charts/
 ```
