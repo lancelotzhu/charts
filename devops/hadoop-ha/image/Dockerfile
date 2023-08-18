@@ -15,12 +15,17 @@ ENV HADOOP_COMMON_HOME=${HADOOP_HOME} \
 RUN sed -i "s@http://\(deb\|security\).debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list
 RUN apt update \
     && apt -y install curl \
+    && apt -y install openssh-server \
     && rm -rf /var/lib/apt/lists/*
 
 # download hadoop
 RUN curl --silent --output /tmp/hadoop.tgz https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/core/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && tar --directory /opt -xzf /tmp/hadoop.tgz && rm /tmp/hadoop.tgz
 
 RUN ln -s /opt/hadoop-${HADOOP_VERSION} ${HADOOP_HOME}
+
+# generate ssh key
+RUN ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''
+RUN cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys
 
 WORKDIR $HADOOP_HOME
 

@@ -64,7 +64,7 @@ This image is modified from [pfisterer/apache-hadoop-helm](https://github.com/pf
 HADOOP_VERSION=3.3.6
 
 # Build
-docker buildx build --push --platform "linux/arm64,linux/amd64" -t lancelotzhu/hadoop:latest -t lancelotzhu/hadoop:$HADOOP_VERSION .
+docker buildx build --push --platform "linux/arm64,linux/amd64" -t lancelotzhu/hadoop-ha:latest -t lancelotzhu/hadoop-ha:$HADOOP_VERSION .
 ```
 
 ---
