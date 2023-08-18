@@ -1,22 +1,9 @@
-FROM openjdk:8-jdk-slim-bullseye as builder
+FROM openjdk:8-jdk-slim-bullseye
 LABEL org.opencontainers.image.authors="lancelot_zhu@163.com"
 
 ENV HADOOP_VERSION 3.3.6
-
-WORKDIR /opt
-
-#run update
-RUN apt update \
-    && apt -y install curl
-
-# download hadoop
-RUN curl --silent --output /tmp/hadoop.tgz https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/core/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && tar --directory /opt -xzf /tmp/hadoop.tgz && rm /tmp/hadoop.tgz
-
-#generate the image from the previous stage
-FROM openjdk:8-jdk-slim-bullseye
-
-ENV HADOOP_VERSION 3.3.6
 ENV HADOOP_HOME=/opt/hadoop
+
 ENV HADOOP_COMMON_HOME=${HADOOP_HOME} \
     HADOOP_HDFS_HOME=${HADOOP_HOME} \
     HADOOP_MAPRED_HOME=${HADOOP_HOME} \
@@ -24,7 +11,13 @@ ENV HADOOP_COMMON_HOME=${HADOOP_HOME} \
     HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop \
     PATH=${PATH}:${HADOOP_HOME}/bin
 
-COPY --from=builder /opt/hadoop-${HADOOP_VERSION} /opt/
+#run update
+RUN apt update \
+    && apt -y install curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# download hadoop
+RUN curl --silent --output /tmp/hadoop.tgz https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/core/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && tar --directory /opt -xzf /tmp/hadoop.tgz && rm /tmp/hadoop.tgz
 
 RUN ln -s /opt/hadoop-${HADOOP_VERSION} ${HADOOP_HOME}
 
