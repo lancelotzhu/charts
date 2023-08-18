@@ -5,7 +5,7 @@
    kubectl exec -n {{ .Release.Namespace }} -it {{ include "hadoop.fullname" . }}-yarn-rm-0 -- /opt/hadoop/bin/yarn node -list
 
 3. Create a port-forward to the yarn resource manager UI:
-   kubectl port-forward -n {{ .Release.Namespace }} {{ include "hadoop.fullname" . }}-yarn-rm-0 8088:8088
+   kubectl port-forward -n {{ .Release.Namespace }} --address 127.0.0.1 {{ include "hadoop.fullname" . }}-yarn-rm-0 8088:8088
 
    Then open the ui in your browser:
 
@@ -24,3 +24,4 @@
    helm upgrade {{ .Release.Name }} --set yarn.nodeManager.replicas=4 stable/hadoop
 
    Make sure to update the values.yaml if you want to make this permanent.
+   

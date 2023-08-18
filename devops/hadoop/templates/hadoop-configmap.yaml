@@ -28,7 +28,7 @@ data:
     # Copy config files from volume mount
     # ------------------------------------------------------
 
-    for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml; do
+    for f in workers core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml; do
       if [[ -e ${CONFIG_DIR}/$f ]]; then
         cp ${CONFIG_DIR}/$f $HADOOP_HOME/etc/hadoop/$f
       else
@@ -243,7 +243,7 @@ data:
       </property>
     </configuration>
 
-  slaves: |
+  workers: |
     localhost
 
   yarn-site.xml: |

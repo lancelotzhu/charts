@@ -27,16 +27,18 @@ The following table lists the configurable parameters of the Hadoop chart and th
 | `imagee.pullPolicy`                    | Pull policy for the images                                     | `Always`                                                    |
 | `hadoopVersion`                        | Version of hadoop libraries being used                         | `3.3.6`                                                           |
 | `antiAffinity`                         | Pod antiaffinity, `hard` or `soft`                             | `hard`                                                            |
+| `hdfs.nameNode.replicas`               | Number of HDFS NameNode replicas                               | `3`                                                               |
 | `hdfs.nameNode.pdbMinAvailable`        | PDB for HDFS NameNode                                          | `1`                                                               |
 | `hdfs.nameNode.resources`              | resources for the HDFS NameNode                                | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m`    |
-| `hdfs.dataNode.replicas`               | Number of HDFS DataNode replicas                               | `1`                                                               |
+| `hdfs.dataNode.replicas`               | Number of HDFS DataNode replicas                               | `3`                                                               |
 | `hdfs.dataNode.pdbMinAvailable`        | PDB for HDFS DataNode                                          | `1`                                                               |
 | `hdfs.dataNode.resources`              | resources for the HDFS DataNode                                | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m`    |
 | `hdfs.webhdfs.enabled`                 | Enable WebHDFS REST API                                        | `true`                                                            |
 | `yarn.resourceManager.pdbMinAvailable` | PDB for the YARN ResourceManager                               | `1`                                                               |
+| `yarn.resourceManager.replicas`        | Number of YARN ResourceManager replicas                        | `3`                                                               |
 | `yarn.resourceManager.resources`       | resources for the YARN ResourceManager                         | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m`    |
 | `yarn.nodeManager.pdbMinAvailable`     | PDB for the YARN NodeManager                                   | `1`                                                               |
-| `yarn.nodeManager.replicas`            | Number of YARN NodeManager replicas                            | `1`                                                               |
+| `yarn.nodeManager.replicas`            | Number of YARN NodeManager replicas                            | `3`                                                               |
 | `yarn.nodeManager.parallelCreate`      | Create all nodeManager statefulset pods in parallel (K8S 1.7+) | `false`                                                           |
 | `yarn.nodeManager.resources`           | Resource limits and requests for YARN NodeManager pods         | `requests:memory=2048Mi,cpu=1000m,limits:memory=2048Mi,cpu=1000m` |
 | `persistence.nameNode.enabled`         | Enable/disable persistent volume                               | `false`                                                           |
