@@ -23,7 +23,7 @@ The following table lists the configurable parameters of the Hadoop chart and th
 | -------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `image.repository`                     | Hadoop image                                                   | `lancelotzhu/hadoop`                                           |
 | `image.tag`                            | Hadoop image tag                                               | `3.3.6`                                                           |
-| `imagee.pullPolicy`                    | Pull policy for the images                                     | `IfNotPresent`                                                    |
+| `imagee.pullPolicy`                    | Pull policy for the images                                     | `Always`                                                    |
 | `hadoopVersion`                        | Version of hadoop libraries being used                         | `3.3.6`                                                           |
 | `antiAffinity`                         | Pod antiaffinity, `hard` or `soft`                             | `hard`                                                            |
 | `hdfs.nameNode.pdbMinAvailable`        | PDB for HDFS NameNode                                          | `1`                                                               |

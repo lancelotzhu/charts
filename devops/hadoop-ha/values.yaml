@@ -1,7 +1,7 @@
 image:
   repository: lancelotzhu/hadoop
   tag: 3.3.6
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 # The version of the hadoop libraries being used in the image.
 hadoopVersion: 3.3.6
