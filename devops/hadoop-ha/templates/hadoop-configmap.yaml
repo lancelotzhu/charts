@@ -162,7 +162,7 @@ data:
       <property>
             <name>ha.zookeeper.quorum</name>
             <value>catzk-zookeeper-0:2181,catzk-zookeeper-1:2181,catzk-zookeeper-2:2181</value>
-      </property
+      </property>
     </configuration>
 
   hdfs-site.xml: |
