@@ -56,18 +56,18 @@ spec:
         - "-d"
         resources:
 {{ toYaml .Values.hdfs.nameNode.resources | indent 10 }}
-        # readinessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 9870
-        #   initialDelaySeconds: 60
-        #   timeoutSeconds: 2
-        # livenessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 9870
-        #   initialDelaySeconds: 60
-        #   timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9870
+          initialDelaySeconds: 180
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9870
+          initialDelaySeconds: 240
+          timeoutSeconds: 2
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
