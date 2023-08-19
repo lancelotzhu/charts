@@ -240,11 +240,6 @@ data:
       </property>
 
       <property>
-        <name>dfs.namenode.http-address</name>
-        <value>0.0.0.0:9870</value>
-      </property>
-
-      <property>
         <name>dfs.replication</name>
           <value>3</value>
       </property>
@@ -273,6 +268,10 @@ data:
       </property>
       <property>
         <name>dfs.namenode.servicerpc-bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <property>
+        <name>dfs.namenode.http-bind-host</name>
         <value>0.0.0.0</value>
       </property>
       <!-- /Bind to all interfaces -->
