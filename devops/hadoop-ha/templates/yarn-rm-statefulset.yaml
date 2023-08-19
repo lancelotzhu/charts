@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "hadoop.fullname" . }}-yarn-rm
+  name: {{ include "hadoop.fullname" . }}-yarn-rm-primary
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
     app.kubernetes.io/name: {{ include "hadoop.name" . }}
     helm.sh/chart: {{ include "hadoop.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: yarn-rm
+    app.kubernetes.io/component: yarn-rm-primary
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "hadoop.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: yarn-rm
-  serviceName: {{ include "hadoop.fullname" . }}-yarn-rm
-  replicas: {{ .Values.yarn.resourceManager.replicas }}
+      app.kubernetes.io/component: yarn-rm-primary
+  serviceName: {{ include "hadoop.fullname" . }}-yarn-rm-primary
+  replicas: {{ .Values.yarn.resourceManager.primary.replicas }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "hadoop.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/component: yarn-rm
+        app.kubernetes.io/component: yarn-rm-primary
     spec:
       affinity:
         podAntiAffinity:
@@ -33,7 +33,7 @@ spec:
               matchLabels:
                 app.kubernetes.io/name: {{ include "hadoop.name" . }}
                 app.kubernetes.io/instance: {{ .Release.Name }}
-                app.kubernetes.io/component: yarn-rm
+                app.kubernetes.io/component: yarn-rm-primary
         {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
@@ -43,7 +43,7 @@ spec:
                 matchLabels:
                   app.kubernetes.io/name: {{ include "hadoop.name" . }}
                   app.kubernetes.io/instance: {{ .Release.Name }}
-                  app.kubernetes.io/component: yarn-rm
+                  app.kubernetes.io/component: yarn-rm-primary
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
@@ -58,7 +58,89 @@ spec:
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
         resources:
-{{ toYaml .Values.yarn.resourceManager.resources | indent 10 }}
+{{ toYaml .Values.yarn.resourceManager.primary.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /ws/v1/cluster/info
+            port: 8088
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /ws/v1/cluster/info
+            port: 8088
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        volumeMounts:
+        - name: hadoop-config
+          mountPath: /tmp/hadoop-config
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: {{ include "hadoop.fullname" . }}
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "hadoop.fullname" . }}-yarn-rm-secondary
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
+  labels:
+    app.kubernetes.io/name: {{ include "hadoop.name" . }}
+    helm.sh/chart: {{ include "hadoop.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: yarn-rm-secondary
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "hadoop.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: yarn-rm-secondary
+  serviceName: {{ include "hadoop.fullname" . }}-yarn-rm-secondary
+  replicas: {{ .Values.yarn.resourceManager.secondary.replicas }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "hadoop.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: yarn-rm-secondary
+    spec:
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: {{ include "hadoop.name" . }}
+                app.kubernetes.io/instance: {{ .Release.Name }}
+                app.kubernetes.io/component: yarn-rm-secondary
+        {{- else if eq .Values.antiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: {{ include "hadoop.name" . }}
+                  app.kubernetes.io/instance: {{ .Release.Name }}
+                  app.kubernetes.io/component: yarn-rm-secondary
+        {{- end }}
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: yarn-rm
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        ports:
+        - containerPort: 8088
+          name: web
+        command:
+           - "/bin/bash"
+           - "/tmp/hadoop-config/bootstrap.sh"
+           - "-d"
+        resources:
+{{ toYaml .Values.yarn.resourceManager.secondary.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: /ws/v1/cluster/info

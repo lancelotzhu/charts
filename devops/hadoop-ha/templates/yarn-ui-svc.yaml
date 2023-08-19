@@ -15,4 +15,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "hadoop.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: yarn-rm
+    app.kubernetes.io/component: yarn-rm-primary,yarn-rm-secondary

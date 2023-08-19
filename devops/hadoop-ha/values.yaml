@@ -93,24 +93,34 @@ hdfs:
 
 yarn:
   resourceManager:
-    pdbMinAvailable: 1
-
-    # The number of YARN ResourceManager instances.
-    replicas: 3
-
-    resources:
-      requests:
-        memory: "256Mi"
-        cpu: "10m"
-      limits:
-        memory: "2048Mi"
-        cpu: "2000m"
+    primary:
+      pdbMinAvailable: 1
+      # The number of YARN ResourceManager instances.
+      replicas: 1
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "2000m"
+    secondary:
+      pdbMinAvailable: 1
+      # The number of YARN ResourceManager instances.
+      replicas: 1
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "2000m"    
 
   nodeManager:
     pdbMinAvailable: 1
 
     # The number of YARN NodeManager instances.
-    replicas: 3
+    replicas: 2
 
     # Create statefulsets in parallel (K8S 1.7+)
     parallelCreate: false

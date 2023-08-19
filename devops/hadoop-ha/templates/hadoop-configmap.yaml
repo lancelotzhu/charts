@@ -267,7 +267,7 @@ data:
 
       <property>            
         <name>dfs.namenode.shared.edits.dir</name>
-        <value>qjournal://{{ include "hadoop.fullname" . }}-hdfs-jn-primary:9870;{{ include "hadoop.fullname" . }}-hdfs-jn-secondary:9870;{{ include "hadoop.fullname" . }}-hdfs-jn-tertiary:9870/cluster</value>        
+        <value>qjournal://{{ include "hadoop.fullname" . }}-hdfs-jn-primary:8485;{{ include "hadoop.fullname" . }}-hdfs-jn-secondary:8485;{{ include "hadoop.fullname" . }}-hdfs-jn-tertiary:8485/cluster</value>        
       </property>
 
       <property>
@@ -394,4 +394,45 @@ data:
           /opt/hadoop/share/hadoop/yarn/lib/*
         </value>
       </property>
+
+      <property>
+        <name>yarn.resourcemanager.ha.enabled</name>
+        <value>true</value>        
+      </property>
+
+      <property>
+        <name>yarn.resourcemanager.cluster-id</name>            
+        <value>rm-cluster</value>        
+      </property>
+
+      <property>
+        <name>yarn.resourcemanager.ha.rm-ids</name>
+        <value>primary,secondary</value>
+      </property>
+
+      <property>
+        <name>yarn.resourcemanager.hostname.primary</name>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-primary</value>
+      </property>
+
+      <property>
+        <name>yarn.resourcemanager.hostname.secondary</name>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-secondary</value>
+      </property>
+
+      <property>
+        <name>yarn.resourcemanager.webapp.address.primary</name>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-primary:8088</value>
+      </property>
+
+      <property>
+        <name>yarn.resourcemanager.webapp.address.secondary</name>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-secondary:8088</value>
+      </property>
+
+      <property>
+        <name>yarn.resourcemanager.zk-address</name>
+        <value>catzk-zookeeper:2181</value>
+      </property>
+
     </configuration>
