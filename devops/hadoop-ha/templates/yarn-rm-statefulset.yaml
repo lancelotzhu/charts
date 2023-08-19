@@ -47,7 +47,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
-      - name: yarn-rm
+      - name: yarn-rm-primary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
@@ -129,7 +129,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
-      - name: yarn-rm
+      - name: yarn-rm-secondary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
