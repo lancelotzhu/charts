@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "hadoop.fullname" . }}-hdfs-nn-primary
+  name: {{ include "hadoop.fullname" . }}-hdfs-nn
   labels:
     app.kubernetes.io/name: {{ include "hadoop.name" . }}
     helm.sh/chart: {{ include "hadoop.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: hdfs-nn-primary
+    app.kubernetes.io/component: hdfs-nn
 spec:
   ports:
   - name: dfs
@@ -19,27 +19,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "hadoop.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: hdfs-nn-primary
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "hadoop.fullname" . }}-hdfs-nn-secondary
-  labels:
-    app.kubernetes.io/name: {{ include "hadoop.name" . }}
-    helm.sh/chart: {{ include "hadoop.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: hdfs-nn-secondary
-spec:
-  ports:
-  - name: dfs
-    port: 9000
-    protocol: TCP
-  - name: webhdfs
-    port: 9870
-  clusterIP: None
-  selector:
-    app.kubernetes.io/name: {{ include "hadoop.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: hdfs-nn-secondary
+    app.kubernetes.io/component: hdfs-nn
