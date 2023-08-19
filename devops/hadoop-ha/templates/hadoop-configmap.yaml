@@ -68,7 +68,7 @@ data:
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start namenode
       else
         #  Wait (with timeout) for the first namenode
-        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
+        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
         if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
           $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} namenode -bootstrapStandby
         else 
@@ -96,7 +96,7 @@ data:
       mkdir -p /root/hdfs/datanode
 
       #  Wait (with timeout) for the first namenode
-      TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
+      TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
       if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start datanode
       else 
