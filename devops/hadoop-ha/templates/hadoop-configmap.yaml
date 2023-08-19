@@ -121,11 +121,13 @@ data:
           # Only format if necessary
           $HADOOP_HOME/bin/hdfs zkfc -formatZK && echo 1 > /root/hdfs/journalnode/formated
         fi
+        $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start zkfc
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
       else
         #  Wait (with timeout) for the first journalnode
         TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-jn-0.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8480"
         if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
+          $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start zkfc
           $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
         else 
           echo "$0: Timeout waiting for $TMP_URL, exiting."
@@ -321,6 +323,11 @@ data:
       <property>
         <name>dfs.ha.automatic-failover.enabled</name>            
         <value>true</value>        
+      </property>
+
+      <property>
+        <name>dfs.ha.automatic-failover.enabled.cluster</name>
+        <value>true</value>
       </property>
 
       <property>
