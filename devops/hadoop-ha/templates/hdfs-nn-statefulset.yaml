@@ -60,13 +60,13 @@ spec:
           httpGet:
             path: /
             port: 9870
-          initialDelaySeconds: 60
+          initialDelaySeconds: 30
           timeoutSeconds: 2
         livenessProbe:
           httpGet:
             path: /
             port: 9870
-          initialDelaySeconds: 120
+          initialDelaySeconds: 60
           timeoutSeconds: 2
         volumeMounts:
         - name: hadoop-config
