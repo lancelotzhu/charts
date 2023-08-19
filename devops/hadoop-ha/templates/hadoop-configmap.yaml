@@ -54,7 +54,7 @@ data:
       # Split hostname at "-" into an array
       # Example hostname: hadoop-hadoop-hdfs-nn-0
       HOSTNAME_ARR=(${HOSTNAME//-/ })
-      HA_NAMENODE_ID="nn" + ${HOSTNAME_ARR[4]}
+      HA_NAMENODE_ID="nn${HOSTNAME_ARR[4]}"
       sed -i "s/HA_NAMENODE_ID_REPLACEME/${HA_NAMENODE_ID}/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 
       mkdir -p /root/hdfs/namenode
