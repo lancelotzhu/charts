@@ -100,7 +100,7 @@ data:
     # ------------------------------------------------------
     if [[ "${HOSTNAME}" =~ "yarn-rm" ]]; then
       $HADOOP_HOME/bin/yarn --loglevel {{ .Values.logLevel }} --daemon start resourcemanager 
-      $HADOOP_HOME/bin/yarn --loglevel {{ .Values.logLevel }} --daemon start proxyserver
+    #  $HADOOP_HOME/bin/yarn --loglevel {{ .Values.logLevel }} --daemon start proxyserver
     fi
 
     # ------------------------------------------------------
