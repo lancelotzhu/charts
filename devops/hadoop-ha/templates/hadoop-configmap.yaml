@@ -77,7 +77,7 @@ data:
       mkdir -p /root/hdfs/datanode
 
       #  Wait (with timeout) for namenode
-      TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn:9870"
+      TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-primary:9870"
       if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start datanode
       else 

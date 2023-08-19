@@ -46,6 +46,7 @@ spec:
                   app.kubernetes.io/component: hdfs-nn-primary
         {{- end }}
       terminationGracePeriodSeconds: 0
+      hostname: {{ include "hadoop.fullname" . }}-hdfs-nn-primary
       containers:
       - name: hdfs-nn-primary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -154,6 +155,7 @@ spec:
                   app.kubernetes.io/component: hdfs-nn-secondary
         {{- end }}
       terminationGracePeriodSeconds: 0
+      hostname: {{ include "hadoop.fullname" . }}-hdfs-nn-secondary
       containers:
       - name: hdfs-nn-secondary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
