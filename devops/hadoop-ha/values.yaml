@@ -12,17 +12,27 @@ antiAffinity: "soft"
 
 hdfs:
   nameNode:
-    pdbMinAvailable: 1
+    primary:
+      pdbMinAvailable: 1
+      replicas: 1
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "1000m"
 
-    replicas: 3
-
-    resources:
-      requests:
-        memory: "256Mi"
-        cpu: "10m"
-      limits:
-        memory: "2048Mi"
-        cpu: "1000m"
+    secondary:
+      pdbMinAvailable: 1
+      replicas: 1
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "1000m"
 
   dataNode:
     # Will be used as dfs.datanode.hostname
@@ -45,17 +55,38 @@ hdfs:
         cpu: "1000m"
 
   journalNode:
-    pdbMinAvailable: 1
+    primary:
+      pdbMinAvailable: 1
+      replicas: 1
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "1000m"  
 
-    replicas: 3
+    secondary:
+      pdbMinAvailable: 1
+      replicas: 1
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "1000m" 
 
-    resources:
-      requests:
-        memory: "256Mi"
-        cpu: "10m"
-      limits:
-        memory: "2048Mi"
-        cpu: "1000m"  
+    tertiary:
+      pdbMinAvailable: 1
+      replicas: 1
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "1000m" 
 
   webhdfs:
     enabled: true
@@ -96,10 +127,17 @@ yarn:
 
 persistence:
   nameNode:
-    enabled: false
-    storageClass: "-"
-    accessMode: ReadWriteOnce
-    size: 50Gi
+    primary:
+      enabled: false
+      storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 50Gi
+
+    secondary:
+      enabled: false
+      storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 50Gi
 
   dataNode:
     enabled: false
@@ -108,7 +146,20 @@ persistence:
     size: 200Gi
 
   journalNode:
-    enabled: false
-    storageClass: "-"
-    accessMode: ReadWriteOnce
-    size: 200Gi
+    primary:
+      enabled: false
+      storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 50Gi
+
+    secondary:
+      enabled: false
+      storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 50Gi
+
+    tertiary:
+      enabled: false
+      storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 50Gi

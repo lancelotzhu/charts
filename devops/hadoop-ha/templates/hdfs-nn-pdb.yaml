@@ -1,16 +1,34 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "hadoop.fullname" . }}-hdfs-nn
+  name: {{ include "hadoop.fullname" . }}-hdfs-nn-primary
   labels:
     app.kubernetes.io/name: {{ include "hadoop.name" . }}
     helm.sh/chart: {{ include "hadoop.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: hdfs-nn
+    app.kubernetes.io/component: hdfs-nn-primary
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "hadoop.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: hdfs-nn
-  minAvailable: {{ .Values.hdfs.nameNode.pdbMinAvailable }}
+      app.kubernetes.io/component: hdfs-nn-primary
+  minAvailable: {{ .Values.hdfs.nameNode.primary.pdbMinAvailable }}
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "hadoop.fullname" . }}-hdfs-nn-secondary
+  labels:
+    app.kubernetes.io/name: {{ include "hadoop.name" . }}
+    helm.sh/chart: {{ include "hadoop.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: hdfs-nn-secondary
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "hadoop.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: hdfs-nn-secondary
+  minAvailable: {{ .Values.hdfs.nameNode.primary.pdbMinAvailable }}
