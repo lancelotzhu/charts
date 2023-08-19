@@ -288,22 +288,22 @@ data:
 
       <property>            
         <name>dfs.namenode.rpc-address.cluster.nn0</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
+        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
       </property>
 
       <property>
         <name>dfs.namenode.http-address.cluster.nn0</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
+        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
       </property>
 
       <property>            
         <name>dfs.namenode.rpc-address.cluster.nn1</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
+        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
       </property>
 
       <property>
         <name>dfs.namenode.http-address.cluster.nn1</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
+        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
       </property>
 
       <property>            
