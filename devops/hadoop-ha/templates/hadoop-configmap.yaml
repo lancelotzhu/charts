@@ -51,6 +51,12 @@ data:
       sed -i "s/EXTERNAL_HTTP_PORT_REPLACEME/9864/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
       sed -i "s/EXTERNAL_DATA_PORT_REPLACEME/9866/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 
+      # Split hostname at "-" into an array
+      # Example hostname: hadoop-hadoop-hdfs-nn-0
+      HOSTNAME_ARR=(${HOSTNAME//-/ })
+      HA_NAMENODE_ID="nn" + ${HOSTNAME_ARR[4]}))
+      sed -i "s/HA_NAMENODE_ID_REPLACEME/${HA_NAMENODE_ID}/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+
       mkdir -p /root/hdfs/namenode
 
       if [[ "${HOSTNAME}" =~ "hdfs-nn-0" ]]; 
@@ -268,6 +274,11 @@ data:
       <property>            
         <name>dfs.nameservices</name>
         <value>cluster</value>        
+      </property>
+
+      <property>
+        <name>dfs.ha.namenode.id</name>
+        <value>HA_NAMENODE_ID_REPLACEME</value>
       </property>
 
       <property>
