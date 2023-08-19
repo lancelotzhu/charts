@@ -53,7 +53,7 @@ data:
 
       mkdir -p /root/hdfs/namenode
 
-      if [[ "${HOSTNAME}" =~ "hdfs-nn-primary" ]]; 
+      if [[ "${HOSTNAME}" =~ "hdfs-nn-0" ]]; 
       then
         if [ ! -f /root/hdfs/namenode/formated ]; then
           # Only format if necessary
@@ -61,8 +61,8 @@ data:
         fi
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start namenode
       else
-        #  Wait (with timeout) for primary namenode
-        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-primary:9870"
+        #  Wait (with timeout) for the first namenode
+        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
         if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
           $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} namenode -bootstrapStandby
         else 
@@ -89,8 +89,8 @@ data:
 
       mkdir -p /root/hdfs/datanode
 
-      #  Wait (with timeout) for primary namenode
-      TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-primary:9870"
+      #  Wait (with timeout) for the first namenode
+      TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
       if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start datanode
       else 
@@ -106,7 +106,7 @@ data:
     if [[ "${HOSTNAME}" =~ "hdfs-jn" ]]; then
       mkdir -p /root/hdfs/journalnode
 
-      if [[ "${HOSTNAME}" =~ "hdfs-jn-primary" ]]; 
+      if [[ "${HOSTNAME}" =~ "hdfs-jn-0" ]]; 
       then
         if [ ! -f /root/hdfs/journalnode/formated ]; then
           # Only format if necessary
@@ -114,8 +114,8 @@ data:
         fi
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
       else
-        #  Wait (with timeout) for primary journalnode
-        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-jn-primary:8480"
+        #  Wait (with timeout) for the first journalnode
+        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-jn-0.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8480"
         if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
           $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
         else 
@@ -185,13 +185,13 @@ data:
     <configuration>
       <property>
             <name>fs.defaultFS</name>
-            <value>hdfs://{{ include "hadoop.fullname" . }}-hdfs-nn:9000/</value>
+            <value>hdfs://cluster</value>
             <description>NameNode URI</description>
       </property>
 
       <property>
             <name>ha.zookeeper.quorum</name>
-            <value>catzk-zookeeper:2181</value>
+            <value>catzk-zookeeper-0.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181;catzk-zookeeper-1.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181;catzk-zookeeper-2.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181</value>
       </property>
     </configuration>
 
@@ -272,32 +272,32 @@ data:
 
       <property>
         <name>dfs.ha.namenodes.cluster</name>
-        <value>primary,secondary</value>
+        <value>nn0,nn1</value>
       </property>
 
       <property>            
-        <name>dfs.namenode.rpc-address.cluster.primary</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-primary:8020</value>        
+        <name>dfs.namenode.rpc-address.cluster.nn0</name>
+        <value>{{ include "hadoop.fullname" . }}-hdfs-nn0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
       </property>
 
       <property>
-        <name>dfs.namenode.http-address.cluster.primary</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-primary:9870</value>
+        <name>dfs.namenode.http-address.cluster.nn0</name>
+        <value>{{ include "hadoop.fullname" . }}-hdfs-nn0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
       </property>
 
       <property>            
-        <name>dfs.namenode.rpc-address.cluster.secondary</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-secondary:8020</value>        
+        <name>dfs.namenode.rpc-address.cluster.nn1</name>
+        <value>{{ include "hadoop.fullname" . }}-hdfs-nn1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
       </property>
 
       <property>
-        <name>dfs.namenode.http-address.cluster.secondary</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-secondary:9870</value>
+        <name>dfs.namenode.http-address.cluster.nn1</name>
+        <value>{{ include "hadoop.fullname" . }}-hdfs-nn1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
       </property>
 
       <property>            
         <name>dfs.namenode.shared.edits.dir</name>
-        <value>qjournal://{{ include "hadoop.fullname" . }}-hdfs-jn-primary:8485;{{ include "hadoop.fullname" . }}-hdfs-jn-secondary:8485;{{ include "hadoop.fullname" . }}-hdfs-jn-tertiary:8485/cluster</value>        
+        <value>qjournal://{{ include "hadoop.fullname" . }}-hdfs-jn-0.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8485;{{ include "hadoop.fullname" . }}-hdfs-jn-1.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8485;{{ include "hadoop.fullname" . }}-hdfs-jn-2.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8485/cluster</value>        
       </property>
 
       <property>
@@ -352,9 +352,10 @@ data:
 
   workers: |
 {{- $hadoopFullname := include "hadoop.fullname" . }}
+{{- $releaseNamespace := .Release.Namespace }}
 {{- $dataNodeReplicaCount := int .Values.hdfs.dataNode.replicas }}
 {{- range $i := until $dataNodeReplicaCount }}
-    {{ $hadoopFullname }}-hdfs-dn-{{ $i }}
+    {{ $hadoopFullname }}-hdfs-dn-{{ $i }}.{{ $hadoopFullname }}-hdfs-dn.{{ $releaseNamespace }}.svc.cluster.local
 {{- end }}
 
   yarn-site.xml: |
@@ -362,10 +363,6 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
     <configuration>
-      <property>
-        <name>yarn.resourcemanager.hostname</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm</value>
-      </property>
 
       <!-- Bind to all interfaces -->
       <property>
@@ -437,37 +434,37 @@ data:
 
       <property>
         <name>yarn.resourcemanager.cluster-id</name>            
-        <value>rm-cluster</value>        
+        <value>yarn-cluster</value>        
       </property>
 
       <property>
         <name>yarn.resourcemanager.ha.rm-ids</name>
-        <value>primary,secondary</value>
+        <value>rm0,rm1</value>
       </property>
 
       <property>
-        <name>yarn.resourcemanager.hostname.primary</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm-primary</value>
+        <name>yarn.resourcemanager.hostname.rm0</name>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-0.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local</value>
       </property>
 
       <property>
-        <name>yarn.resourcemanager.hostname.secondary</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm-secondary</value>
+        <name>yarn.resourcemanager.webapp.address.rm0</name>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-0.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local:8088</value>
       </property>
 
       <property>
-        <name>yarn.resourcemanager.webapp.address.primary</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm-primary:8088</value>
+        <name>yarn.resourcemanager.hostname.rm1</name>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-1.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local</value>
       </property>
 
       <property>
-        <name>yarn.resourcemanager.webapp.address.secondary</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm-secondary:8088</value>
+        <name>yarn.resourcemanager.webapp.address.rm1</name>
+        <value>{{ include "hadoop.fullname" . }}-yarn-rm-1.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local:8088</value>
       </property>
 
       <property>
         <name>yarn.resourcemanager.zk-address</name>
-        <value>catzk-zookeeper:2181</value>
+        <value>catzk-zookeeper-0.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181;catzk-zookeeper-1.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181;catzk-zookeeper-2.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181</value>
       </property>
 
     </configuration>
