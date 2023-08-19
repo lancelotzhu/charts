@@ -65,12 +65,13 @@ data:
           # Only format if necessary
           $HADOOP_HOME/bin/hdfs namenode -format -force -nonInteractive && echo 1 > /root/hdfs/namenode/formated
         fi
+        service ssh start
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start namenode
       else
         #  Wait (with timeout) for the first namenode
         TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
         if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
-          $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} namenode -bootstrapStandby
+          $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} namenode -bootstrapStandby -force -nonInteractive
         else 
           echo "$0: Timeout waiting for $TMP_URL, exiting."
           exit 1
@@ -197,7 +198,7 @@ data:
 
       <property>
             <name>ha.zookeeper.quorum</name>
-            <value>catzk-zookeeper-0.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181;catzk-zookeeper-1.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181;catzk-zookeeper-2.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181</value>
+            <value>catzk-zookeeper-headless:2181</value>
       </property>
     </configuration>
 
@@ -475,7 +476,7 @@ data:
 
       <property>
         <name>yarn.resourcemanager.zk-address</name>
-        <value>catzk-zookeeper-0.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181;catzk-zookeeper-1.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181;catzk-zookeeper-2.catzk-zookeeper-headless.{{ .Release.Namespace }}.svc.cluster.local:2181</value>
+        <value>catzk-zookeeper-headless:2181</value>
       </property>
 
     </configuration>
