@@ -16,6 +16,7 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: hdfs-nn-primary
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn-primary
+  hostname: {{ include "hadoop.fullname" . }}-hdfs-nn-primary
   replicas: {{ .Values.hdfs.nameNode.primary.replicas }}
   template:
     metadata:
@@ -46,7 +47,6 @@ spec:
                   app.kubernetes.io/component: hdfs-nn-primary
         {{- end }}
       terminationGracePeriodSeconds: 0
-      hostname: {{ include "hadoop.fullname" . }}-hdfs-nn-primary
       containers:
       - name: hdfs-nn-primary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -125,6 +125,7 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: hdfs-nn-secondary
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn-secondary
+  hostname: {{ include "hadoop.fullname" . }}-hdfs-nn-secondary
   replicas: {{ .Values.hdfs.nameNode.secondary.replicas }}
   template:
     metadata:
@@ -155,7 +156,6 @@ spec:
                   app.kubernetes.io/component: hdfs-nn-secondary
         {{- end }}
       terminationGracePeriodSeconds: 0
-      hostname: {{ include "hadoop.fullname" . }}-hdfs-nn-secondary
       containers:
       - name: hdfs-nn-secondary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
