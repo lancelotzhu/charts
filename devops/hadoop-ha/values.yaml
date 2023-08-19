@@ -29,8 +29,8 @@ hdfs:
     # You still need to set up services + ingress for every DN
     # Datanodes will expect to
     externalHostname: example.com
-    externalDataPortRangeStart: 50500
-    externalHTTPPortRangeStart: 51000
+    externalDataPortRangeStart: 9000
+    externalHTTPPortRangeStart: 9864
 
     replicas: 3
 

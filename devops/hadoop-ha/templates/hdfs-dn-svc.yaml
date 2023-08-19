@@ -13,8 +13,8 @@ spec:
   - name: dfs
     port: 9000
     protocol: TCP
-  # - name: webhdfs
-  #   port: 9864
+  - name: webhdfs
+    port: 9864
   clusterIP: None
   selector:
     app.kubernetes.io/name: {{ include "hadoop.name" . }}
