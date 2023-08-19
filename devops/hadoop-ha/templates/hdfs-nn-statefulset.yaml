@@ -116,14 +116,14 @@ metadata:
     app.kubernetes.io/name: {{ include "hadoop.name" . }}
     helm.sh/chart: {{ include "hadoop.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: hdfs-nnn-secondary
+    app.kubernetes.io/component: hdfs-nn-secondary
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "hadoop.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: hdfs-nn
-  serviceName: {{ include "hadoop.fullname" . }}-hdfs-nnn-secondary
+  serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn-secondary
   replicas: {{ .Values.hdfs.nameNode.secondary.replicas }}
   template:
     metadata:
