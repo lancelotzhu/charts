@@ -52,11 +52,24 @@ data:
       sed -i "s/EXTERNAL_DATA_PORT_REPLACEME/9866/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 
       mkdir -p /root/hdfs/namenode
-      if [ ! -f /root/hdfs/namenode/formated ]; then
-        # Only format if necessary
-        $HADOOP_HOME/bin/hdfs namenode -format -force -nonInteractive && echo 1 > /root/hdfs/namenode/formated
+
+      if [[ "${HOSTNAME}" =~ "hdfs-nn-primary" ]]; 
+      then
+        if [ ! -f /root/hdfs/namenode/formated ]; then
+          # Only format if necessary
+          $HADOOP_HOME/bin/hdfs namenode -format -force -nonInteractive && echo 1 > /root/hdfs/namenode/formated
+        fi
+        $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start namenode
+      else
+        #  Wait (with timeout) for primary namenode
+        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-primary:9870"
+        if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
+          $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} namenode -bootstrapStandby
+        else 
+          echo "$0: Timeout waiting for $TMP_URL, exiting."
+          exit 1
+        fi
       fi
-      $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start namenode
     fi
 
     # ------------------------------------------------------
@@ -76,7 +89,7 @@ data:
 
       mkdir -p /root/hdfs/datanode
 
-      #  Wait (with timeout) for namenode
+      #  Wait (with timeout) for primary namenode
       TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-primary:9870"
       if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start datanode
@@ -92,7 +105,24 @@ data:
     # ------------------------------------------------------
     if [[ "${HOSTNAME}" =~ "hdfs-jn" ]]; then
       mkdir -p /root/hdfs/journalnode
-      $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
+
+      if [[ "${HOSTNAME}" =~ "hdfs-jn-primary" ]]; 
+      then
+        if [ ! -f /root/hdfs/journalnode/formated ]; then
+          # Only format if necessary
+          $HADOOP_HOME/bin/hdfs zkfc -formatZK && echo 1 > /root/hdfs/journalnode/formated
+        fi
+        $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
+      else
+        #  Wait (with timeout) for primary journalnode
+        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-jn-primary:8480"
+        if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
+          $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
+        else 
+          echo "$0: Timeout waiting for $TMP_URL, exiting."
+          exit 1
+        fi      
+      fi
     fi
 
     # ------------------------------------------------------
@@ -100,7 +130,7 @@ data:
     # ------------------------------------------------------
     if [[ "${HOSTNAME}" =~ "yarn-rm" ]]; then
       $HADOOP_HOME/bin/yarn --loglevel {{ .Values.logLevel }} --daemon start resourcemanager 
-    #  $HADOOP_HOME/bin/yarn --loglevel {{ .Values.logLevel }} --daemon start proxyserver
+      $HADOOP_HOME/bin/yarn --loglevel {{ .Values.logLevel }} --daemon start proxyserver
     fi
 
     # ------------------------------------------------------
@@ -273,6 +303,11 @@ data:
       <property>
         <name>dfs.ha.automatic-failover.enabled</name>            
         <value>true</value>        
+      </property>
+
+      <property>
+        <name>dfs.journalnode.edits.dir</name>
+        <value>/root/hdfs/journalnode</value>       
       </property>
      
       <property>
