@@ -122,7 +122,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "hadoop.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: hdfs-nn
+      app.kubernetes.io/component: hdfs-nn-secondary
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn-secondary
   replicas: {{ .Values.hdfs.nameNode.secondary.replicas }}
   template:
@@ -155,7 +155,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
-      - name: hdfs-nn
+      - name: hdfs-nn-secondary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:

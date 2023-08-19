@@ -14,7 +14,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "hadoop.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: hdfs-jn
+      app.kubernetes.io/component: hdfs-jn-primary
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-jn-primary
   replicas: {{ .Values.hdfs.journalNode.primary.replicas }}
   template:
@@ -47,7 +47,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
-      - name: hdfs-jn
+      - name: hdfs-jn-primary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
@@ -121,7 +121,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "hadoop.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: hdfs-jn
+      app.kubernetes.io/component: hdfs-jn-secondary
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-jn-secondary
   replicas: {{ .Values.hdfs.journalNode.secondary.replicas }}
   template:
@@ -154,7 +154,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
-      - name: hdfs-jn
+      - name: hdfs-jn-secondary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
@@ -228,7 +228,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "hadoop.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: hdfs-jn
+      app.kubernetes.io/component: hdfs-jn-tertiary
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-jn-tertiary
   replicas: {{ .Values.hdfs.journalNode.tertiary.replicas }}
   template:
@@ -261,7 +261,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
-      - name: hdfs-jn
+      - name: hdfs-jn-tertiary
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
