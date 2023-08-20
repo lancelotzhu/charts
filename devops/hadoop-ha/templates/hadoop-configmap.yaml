@@ -58,15 +58,14 @@ data:
       sed -i "s/HA_NAMENODE_ID_REPLACEME/${HA_NAMENODE_ID}/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 
       mkdir -p /root/hdfs/namenode
-
-      if [ ! -f /root/hdfs/namenode/zk-formated ]; then
-        # Only format if necessary
-        $HADOOP_HOME/bin/hdfs zkfc -formatZK -force -nonInteractive && echo 1 > /root/hdfs/namenode/zk-formated
-      fi
       
       service ssh start
       if [[ "${HOSTNAME}" =~ "hdfs-nn-0" ]]; 
       then
+        if [ ! -f /root/hdfs/namenode/zk-formated ]; then
+          # Only format if necessary
+          $HADOOP_HOME/bin/hdfs zkfc -formatZK -force -nonInteractive && echo 1 > /root/hdfs/namenode/zk-formated
+        fi
         if [ ! -f /root/hdfs/namenode/formated ]; then
           # Only format if necessary
           $HADOOP_HOME/bin/hdfs namenode -format -force -nonInteractive && echo 1 > /root/hdfs/namenode/formated
@@ -337,7 +336,12 @@ data:
       <property>
         <name>dfs.ha.fencing.ssh.private-key-files</name>            
         <value>/root/.ssh/id_rsa</value>
-      </property>       
+      </property>   
+
+      <property>
+        <name>dfs.ha.fencing.ssh.connect-timeout</name>
+        <value>30000</value>        
+      </property>    
     </configuration>
 
   mapred-site.xml: |
