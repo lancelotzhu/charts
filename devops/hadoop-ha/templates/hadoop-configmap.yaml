@@ -63,9 +63,8 @@ data:
         # Only format if necessary
         $HADOOP_HOME/bin/hdfs zkfc -formatZK -force -nonInteractive && echo 1 > /root/hdfs/namenode/zk-formated
       fi
-      $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start zkfc
+      
       service ssh start
-
       if [[ "${HOSTNAME}" =~ "hdfs-nn-0" ]]; 
       then
         if [ ! -f /root/hdfs/namenode/formated ]; then
@@ -84,6 +83,7 @@ data:
           exit 1
         fi
       fi
+      $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start zkfc
     fi
 
     # ------------------------------------------------------
