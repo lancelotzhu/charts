@@ -54,7 +54,7 @@ data:
       # Split hostname at "-" into an array
       # Example hostname: hadoop-hadoop-ha-hdfs-nn-0
       HOSTNAME_ARR=(${HOSTNAME//-/ })
-      HA_NAMENODE_ID="nn${HOSTNAME_ARR[5]}"
+      HA_NAMENODE_ID="nn${HOSTNAME_ARR[-1]}"
       sed -i "s/HA_NAMENODE_ID_REPLACEME/${HA_NAMENODE_ID}/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 
       mkdir -p /root/hdfs/namenode
@@ -93,8 +93,8 @@ data:
       # Example hostname: hadoop-hadoop-ha-hdfs-dn-0
       HOSTNAME_ARR=(${HOSTNAME//-/ })
       # Add instance number to start of external port ranges
-      EXTERNAL_HTTP_PORT=$(({{ .Values.hdfs.dataNode.externalHTTPPortRangeStart }} + ${HOSTNAME_ARR[5]}))
-      EXTERNAL_DATA_PORT=$(({{ .Values.hdfs.dataNode.externalDataPortRangeStart }} + ${HOSTNAME_ARR[5]}))
+      EXTERNAL_HTTP_PORT=$(({{ .Values.hdfs.dataNode.externalHTTPPortRangeStart }} + ${HOSTNAME_ARR[-1]}))
+      EXTERNAL_DATA_PORT=$(({{ .Values.hdfs.dataNode.externalDataPortRangeStart }} + ${HOSTNAME_ARR[-1]}))
 
       # sed command changing REPLACEME in $HADOOP_HOME/etc/hadoop/hdfs-site.xml to actual port numbers
       sed -i "s/EXTERNAL_HTTP_PORT_REPLACEME/${EXTERNAL_HTTP_PORT}/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
@@ -267,7 +267,7 @@ data:
 
       <property>            
         <name>dfs.nameservices</name>
-        <value>cluster</value>        
+        <value>ha-cluster</value>        
       </property>
 
       <property>
@@ -276,27 +276,27 @@ data:
       </property>
 
       <property>
-        <name>dfs.ha.namenodes.cluster</name>
+        <name>dfs.ha.namenodes.ha-cluster</name>
         <value>nn0,nn1</value>
       </property>
 
       <property>            
-        <name>dfs.namenode.rpc-address.cluster.nn0</name>
+        <name>dfs.namenode.rpc-address.ha-cluster.nn0</name>
         <value>{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
       </property>
 
       <property>
-        <name>dfs.namenode.http-address.cluster.nn0</name>
+        <name>dfs.namenode.http-address.ha-cluster.nn0</name>
         <value>{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
       </property>
 
       <property>            
-        <name>dfs.namenode.rpc-address.cluster.nn1</name>
+        <name>dfs.namenode.rpc-address.ha-cluster.nn1</name>
         <value>{{ include "hadoop.fullname" . }}-hdfs-nn-1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
       </property>
 
       <property>
-        <name>dfs.namenode.http-address.cluster.nn1</name>
+        <name>dfs.namenode.http-address.ha-cluster.nn1</name>
         <value>{{ include "hadoop.fullname" . }}-hdfs-nn-1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
       </property>
 
@@ -321,7 +321,7 @@ data:
       </property>
      
       <property>
-        <name>dfs.client.failover.proxy.provider.cluster</name>            
+        <name>dfs.client.failover.proxy.provider.ha-cluster</name>            
         <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
       </property>
 
