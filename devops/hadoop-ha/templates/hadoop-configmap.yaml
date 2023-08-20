@@ -312,7 +312,7 @@ data:
       </property>
 
       <property>
-        <name>dfs.ha.automatic-failover.enabled.cluster</name>
+        <name>dfs.ha.nn.not-become-active-in-safemode</name>
         <value>true</value>
       </property>
 

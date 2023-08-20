@@ -24,7 +24,8 @@ RUN curl --silent --output /tmp/hadoop.tgz https://mirrors.tuna.tsinghua.edu.cn/
 RUN ln -s /opt/hadoop-${HADOOP_VERSION} ${HADOOP_HOME}
 
 # generate ssh key
-RUN ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''
+RUN ssh-keygen -t rsa -m PEM -f /root/.ssh/id_rsa -N ''
+
 RUN cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys
 
 WORKDIR $HADOOP_HOME
