@@ -59,22 +59,25 @@ data:
 
       mkdir -p /root/hdfs/namenode
 
+      if [ ! -f /root/hdfs/namenode/zk-formated ]; then
+        # Only format if necessary
+        $HADOOP_HOME/bin/hdfs zkfc -formatZK && echo 1 > /root/hdfs/namenode/zk-formated
+      fi
+      $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start zkfc
+      service ssh start
+
       if [[ "${HOSTNAME}" =~ "hdfs-nn-0" ]]; 
       then
         if [ ! -f /root/hdfs/namenode/formated ]; then
           # Only format if necessary
           $HADOOP_HOME/bin/hdfs namenode -format -force -nonInteractive && echo 1 > /root/hdfs/namenode/formated
         fi
-        service ssh start
-        $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start zkfc
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start namenode
       else
         #  Wait (with timeout) for the first namenode
-        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
+        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
         if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
           $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} namenode -bootstrapStandby -force -nonInteractive
-          service ssh start
-          $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start zkfc
           $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start namenode
         else 
           echo "$0: Timeout waiting for $TMP_URL, exiting."
@@ -101,7 +104,7 @@ data:
       mkdir -p /root/hdfs/datanode
 
       #  Wait (with timeout) for the first namenode
-      TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
+      TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870"
       if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
         $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start datanode
       else 
@@ -116,24 +119,7 @@ data:
     # ------------------------------------------------------
     if [[ "${HOSTNAME}" =~ "hdfs-jn" ]]; then
       mkdir -p /root/hdfs/journalnode
-
-      if [[ "${HOSTNAME}" =~ "hdfs-jn-0" ]]; 
-      then
-        if [ ! -f /root/hdfs/journalnode/formated ]; then
-          # Only format if necessary
-          $HADOOP_HOME/bin/hdfs zkfc -formatZK && echo 1 > /root/hdfs/journalnode/formated
-        fi
-        $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
-      else
-        #  Wait (with timeout) for the first journalnode
-        TMP_URL="http://{{ include "hadoop.fullname" . }}-hdfs-jn-0.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8480"
-        if timeout 5m bash -c "until curl -sf $TMP_URL; do echo Waiting for $TMP_URL; sleep 5; done"; then
-          $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
-        else 
-          echo "$0: Timeout waiting for $TMP_URL, exiting."
-          exit 1
-        fi      
-      fi
+      $HADOOP_HOME/bin/hdfs --loglevel {{ .Values.logLevel }} --daemon start journalnode
     fi
 
     # ------------------------------------------------------
