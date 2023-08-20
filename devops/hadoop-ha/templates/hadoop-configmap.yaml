@@ -188,7 +188,7 @@ data:
       <property>
         <name>ha.zookeeper.quorum</name>
         <value>
-{{- $hadoopFullname := include "hadoop.fullname" . }}    
+{{- $releaseName := .Release.Name }}    
 {{- $releaseNamespace := .Release.Namespace }}
 
 {{- if or .Values.zookeeper.enabled .Values.externalZookeeper.servers }}
@@ -197,9 +197,9 @@ data:
     {{- $port := .Values.zookeeper.service.ports.client | int }}
     {{- range $i, $e := until $nodes }}
       {{- if eq $i 0 -}}
-        {{- printf "%s-%d.%s-headless.%s.svc.cluster.local:%d" $hadoopFullname $i $hadoopFullname $releaseNamespace $port -}}
+        {{- printf "%s-zookeeper-%d.%s-zookeeper-headless.%s.svc.cluster.local:%d" $releaseName $i $releaseName $releaseNamespace $port -}}
       {{- else -}}
-        {{- printf ",%s-%d.%s-headless.%s.svc.cluster.local:%d" $hadoopFullname $i $hadoopFullname $releaseNamespace $port -}}
+        {{- printf ",%s-zookeeper-%d.%s-zookeeper-headless.%s.svc.cluster.local:%d" $releaseName $i $releaseName $releaseNamespace $port -}}
       {{- end -}}
     {{- end }}
   {{- else if .Values.externalZookeeper.servers }}
@@ -213,11 +213,6 @@ data:
     {{- end }}
   {{- end }}
 {{- end }}</value>
-      </property>
-
-      <property>
-        <name>ha.zookeeper.quorum</name>
-        <value>catzk-zookeeper-headless:2181</value>
       </property>
     </configuration>
 
@@ -309,6 +304,7 @@ data:
         <name>dfs.ha.namenodes.ha-cluster</name>
         <value>
 
+{{- $hadoopFullname := include "hadoop.fullname" . }} 
 {{- $nameNodeReplicaCount := int .Values.hdfs.nameNode.replicas -}}
 {{- $journalNodeReplicaCount := int .Values.hdfs.journalNode.replicas -}}
 
@@ -526,7 +522,32 @@ data:
 
       <property>
         <name>yarn.resourcemanager.zk-address</name>
-        <value>catzk-zookeeper-headless:2181</value>
+        <value>
+{{- $releaseName := .Release.Name }}    
+{{- $releaseNamespace := .Release.Namespace }}
+
+{{- if or .Values.zookeeper.enabled .Values.externalZookeeper.servers }}
+  {{- if or .Values.zookeeper.enabled }}
+    {{- $nodes := .Values.zookeeper.replicaCount | int }}
+    {{- $port := .Values.zookeeper.service.ports.client | int }}
+    {{- range $i, $e := until $nodes }}
+      {{- if eq $i 0 -}}
+        {{- printf "%s-zookeeper-%d.%s-zookeeper-headless.%s.svc.cluster.local:%d" $releaseName $i $releaseName $releaseNamespace $port -}}
+      {{- else -}}
+        {{- printf ",%s-zookeeper-%d.%s-zookeeper-headless.%s.svc.cluster.local:%d" $releaseName $i $releaseName $releaseNamespace $port -}}
+      {{- end -}}
+    {{- end }}
+  {{- else if .Values.externalZookeeper.servers }}
+    {{- $port := .Values.zookeeper.service.ports.client | int }}
+    {{- range $i, $e :=.Values.externalZookeeper.servers }}
+      {{- if eq $i 0 -}}
+        {{- printf "%s:%d" $e $port  -}}
+      {{- else -}}
+        {{- printf ",%s:%d" $e $port  -}}
+      {{- end -}}
+    {{- end }}
+  {{- end }}
+{{- end }}</value>
       </property>
 
     </configuration>
