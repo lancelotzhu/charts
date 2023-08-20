@@ -181,7 +181,7 @@ data:
     <configuration>
       <property>
             <name>fs.defaultFS</name>
-            <value>hdfs://cluster</value>
+            <value>hdfs://ha-cluster</value>
             <description>NameNode URI</description>
       </property>
 
@@ -230,7 +230,7 @@ data:
 
       <property>
         <name>dfs.replication</name>
-          <value>3</value>
+          <value>{{ .Values.hdfs.dataNode.replicas }}</value>
       </property>
 
       <property>
@@ -277,33 +277,49 @@ data:
 
       <property>
         <name>dfs.ha.namenodes.ha-cluster</name>
-        <value>nn0,nn1</value>
+        <value>
+
+{{- $nameNodeReplicaCount := int .Values.hdfs.nameNode.replicas -}}
+{{- $journalNodeReplicaCount := int .Values.hdfs.journalNode.replicas -}}
+{{- $hadoopFullname := include "hadoop.fullname" . }}    
+{{- $releaseNamespace := .Release.Namespace }}
+
+{{- range $i := until $nameNodeReplicaCount -}}
+{{- if eq $i 0 -}}
+{{- printf "nn%d" $i  -}}
+{{- else -}}
+{{- printf ",nn%d" $i  -}}
+{{- end -}}
+{{- end -}}
+        </value>
       </property>
 
+{{- range $i := until $nameNodeReplicaCount }}
+
       <property>            
-        <name>dfs.namenode.rpc-address.ha-cluster.nn0</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
+        <name>dfs.namenode.rpc-address.ha-cluster.nn{{ $i }}</name>
+        <value>{{ $hadoopFullname }}-hdfs-nn-{{ $i }}.{{ $hadoopFullname }}-hdfs-nn.{{ $releaseNamespace }}.svc.cluster.local:8020</value>        
       </property>
 
       <property>
-        <name>dfs.namenode.http-address.ha-cluster.nn0</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-0.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
+        <name>dfs.namenode.http-address.ha-cluster.nn{{ $i }}</name>
+        <value>{{ $hadoopFullname }}-hdfs-nn-{{ $i }}.{{ $hadoopFullname }}-hdfs-nn.{{ $releaseNamespace }}.svc.cluster.local:9870</value>
       </property>
 
-      <property>            
-        <name>dfs.namenode.rpc-address.ha-cluster.nn1</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:8020</value>        
-      </property>
-
-      <property>
-        <name>dfs.namenode.http-address.ha-cluster.nn1</name>
-        <value>{{ include "hadoop.fullname" . }}-hdfs-nn-1.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870</value>
-      </property>
+{{- end }}
 
       <property>            
         <name>dfs.namenode.shared.edits.dir</name>
-        <value>qjournal://{{ include "hadoop.fullname" . }}-hdfs-jn-0.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8485;{{ include "hadoop.fullname" . }}-hdfs-jn-1.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8485;{{ include "hadoop.fullname" . }}-hdfs-jn-2.{{ include "hadoop.fullname" . }}-hdfs-jn.{{ .Release.Namespace }}.svc.cluster.local:8485/cluster</value>        
-      </property>
+        <value>qjournal:// 
+{{- range $i := until $journalNodeReplicaCount -}}
+{{- if eq $i 0 -}}
+{{- printf "%s-hdfs-jn-%d.%s-hdfs-jn.%s.svc.cluster.local:8485" $hadoopFullname $i $hadoopFullname $releaseNamespace  -}}
+{{- else -}}
+{{- printf ";%s-hdfs-jn-%d.%s-hdfs-jn.%s.svc.cluster.local:8485" $hadoopFullname $i $hadoopFullname $releaseNamespace  -}}
+{{- end -}}
+{{- end -}}
+        /cluster</value>        
+      </property>   
 
       <property>
         <name>dfs.ha.automatic-failover.enabled</name>            
@@ -366,8 +382,6 @@ data:
     </configuration>
 
   workers: |
-{{- $hadoopFullname := include "hadoop.fullname" . }}
-{{- $releaseNamespace := .Release.Namespace }}
 {{- $dataNodeReplicaCount := int .Values.hdfs.dataNode.replicas }}
 {{- range $i := until $dataNodeReplicaCount }}
     {{ $hadoopFullname }}-hdfs-dn-{{ $i }}.{{ $hadoopFullname }}-hdfs-dn.{{ $releaseNamespace }}.svc.cluster.local
@@ -454,28 +468,33 @@ data:
 
       <property>
         <name>yarn.resourcemanager.ha.rm-ids</name>
-        <value>rm0,rm1</value>
+        <value>
+
+{{- $resourceManagerReplicaCount := int .Values.yarn.resourceManager.replicas -}}
+
+{{- range $i := until $resourceManagerReplicaCount -}}
+{{- if eq $i 0 -}}
+{{- printf "rm%d" $i  -}}
+{{- else -}}
+{{- printf ",rm%d" $i  -}}
+{{- end -}}
+{{- end -}}
+        </value>
+      </property>
+
+{{- range $i := until $resourceManagerReplicaCount }}
+
+      <property>            
+        <name>yarn.resourcemanager.hostname.rm{{ $i }}</name>
+        <value>{{ $hadoopFullname }}-yarn-rm-{{ $i }}.{{ $hadoopFullname }}-yarn-rm.{{ $releaseNamespace }}.svc.cluster.local</value>        
       </property>
 
       <property>
-        <name>yarn.resourcemanager.hostname.rm0</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm-0.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local</value>
+        <name>yarn.resourcemanager.webapp.address.rm{{ $i }}</name>
+        <value>{{ $hadoopFullname }}-yarn-rm-{{ $i }}.{{ $hadoopFullname }}-yarn-rm.{{ $releaseNamespace }}.svc.cluster.local:8088</value>
       </property>
 
-      <property>
-        <name>yarn.resourcemanager.webapp.address.rm0</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm-0.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local:8088</value>
-      </property>
-
-      <property>
-        <name>yarn.resourcemanager.hostname.rm1</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm-1.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local</value>
-      </property>
-
-      <property>
-        <name>yarn.resourcemanager.webapp.address.rm1</name>
-        <value>{{ include "hadoop.fullname" . }}-yarn-rm-1.{{ include "hadoop.fullname" . }}-yarn-rm.{{ .Release.Namespace }}.svc.cluster.local:8088</value>
-      </property>
+{{- end }}
 
       <property>
         <name>yarn.resourcemanager.zk-address</name>
