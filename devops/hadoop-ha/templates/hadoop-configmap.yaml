@@ -180,14 +180,44 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
       <property>
-            <name>fs.defaultFS</name>
-            <value>hdfs://ha-cluster</value>
-            <description>NameNode URI</description>
+        <name>fs.defaultFS</name>
+        <value>hdfs://ha-cluster</value>
+        <description>NameNode URI</description>
       </property>
 
       <property>
-            <name>ha.zookeeper.quorum</name>
-            <value>catzk-zookeeper-headless:2181</value>
+        <name>ha.zookeeper.quorum</name>
+        <value>
+{{- $hadoopFullname := include "hadoop.fullname" . }}    
+{{- $releaseNamespace := .Release.Namespace }}
+
+{{- if or .Values.zookeeper.enabled .Values.externalZookeeper.servers }}
+  {{- if or .Values.zookeeper.enabled }}
+    {{- $nodes := .Values.zookeeper.replicaCount | int }}
+    {{- $port := .Values.zookeeper.service.ports.client | int }}
+    {{- range $i, $e := until $nodes }}
+      {{- if eq $i 0 -}}
+        {{- printf "%s-%d.%s-headless.%s.svc.cluster.local:%d" $hadoopFullname $i $hadoopFullname $releaseNamespace $port -}}
+      {{- else -}}
+        {{- printf ",%s-%d.%s-headless.%s.svc.cluster.local:%d" $hadoopFullname $i $hadoopFullname $releaseNamespace $port -}}
+      {{- end -}}
+    {{- end }}
+  {{- else if .Values.externalZookeeper.servers }}
+    {{- $port := .Values.zookeeper.service.ports.client | int }}
+    {{- range $i, $e :=.Values.externalZookeeper.servers }}
+      {{- if eq $i 0 -}}
+        {{- printf "%s:%d" $e $port  -}}
+      {{- else -}}
+        {{- printf ",%s:%d" $e $port  -}}
+      {{- end -}}
+    {{- end }}
+  {{- end }}
+{{- end }}</value>
+      </property>
+
+      <property>
+        <name>ha.zookeeper.quorum</name>
+        <value>catzk-zookeeper-headless:2181</value>
       </property>
     </configuration>
 
@@ -198,8 +228,8 @@ data:
 
 {{- if .Values.hdfs.webhdfs.enabled }}
       <property>
-          <name>dfs.webhdfs.enabled</name>
-          <value>true</value>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
       </property> 
 {{- end }}
 
@@ -281,8 +311,6 @@ data:
 
 {{- $nameNodeReplicaCount := int .Values.hdfs.nameNode.replicas -}}
 {{- $journalNodeReplicaCount := int .Values.hdfs.journalNode.replicas -}}
-{{- $hadoopFullname := include "hadoop.fullname" . }}    
-{{- $releaseNamespace := .Release.Namespace }}
 
 {{- range $i := until $nameNodeReplicaCount -}}
 {{- if eq $i 0 -}}

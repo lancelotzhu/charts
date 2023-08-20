@@ -12,3 +12,8 @@ maintainers:
   - name: lancelotzhu
     email: lancelot_zhu@163.com
     url: http://github.com/lancelotzhu
+dependencies:
+  - condition: zookeeper.enabled
+    name: zookeeper
+    version: 9.x.x
+    repository: https://charts.bitnami.com/bitnami

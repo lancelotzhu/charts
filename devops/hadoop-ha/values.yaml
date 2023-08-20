@@ -1,3 +1,6 @@
+## @section Hadoop Parameters
+##
+
 image:
   repository: lancelotzhu/hadoop-ha
   tag: 3.3.6
@@ -12,9 +15,8 @@ antiAffinity: "soft"
 
 hdfs:
   nameNode:
-    pdbMinAvailable: 1
-    
-    replicas: 2
+    replicas: 3
+    pdbMinAvailable: 2
     
     resources:
       requests:
@@ -25,16 +27,15 @@ hdfs:
         cpu: "1000m"
 
   dataNode:
+    replicas: 3
+    pdbMinAvailable: 2
+
     # Will be used as dfs.datanode.hostname
     # You still need to set up services + ingress for every DN
     # Datanodes will expect to
     externalHostname: example.com
-    externalDataPortRangeStart: 9000
-    externalHTTPPortRangeStart: 9864
-
-    replicas: 3
-
-    pdbMinAvailable: 1
+    externalDataPortRangeStart: 50500
+    externalHTTPPortRangeStart: 51000
 
     resources:
       requests:
@@ -45,10 +46,10 @@ hdfs:
         cpu: "1000m"
 
   journalNode:
-    pdbMinAvailable: 1
-
+    # The number must be an odd one.
     replicas: 3
-    
+    pdbMinAvailable: 3
+
     resources:
       requests:
         memory: "256Mi"
@@ -62,10 +63,8 @@ hdfs:
 
 yarn:
   resourceManager:
-    pdbMinAvailable: 1
-
-    # The number of YARN ResourceManager instances.
-    replicas: 2
+    replicas: 3
+    pdbMinAvailable: 2
 
     resources:
       requests:
@@ -76,16 +75,12 @@ yarn:
         cpu: "2000m"  
 
   nodeManager:
-    pdbMinAvailable: 1
-
-    # The number of YARN NodeManager instances.
-    replicas: 2
+    replicas: 3
+    pdbMinAvailable: 2
 
     # Create statefulsets in parallel (K8S 1.7+)
     parallelCreate: false
 
-    # CPU and memory resources allocated to each node manager pod.
-    # This should be tuned to fit your workload.
     resources:
       requests:
         memory: "2048Mi"
@@ -112,3 +107,34 @@ persistence:
     storageClass: "-"
     accessMode: ReadWriteOnce
     size: 50Gi
+
+  # turn on/off zookeeper's persistence
+  enabled: false
+
+
+## @section External Zookeeper paramaters
+##
+externalZookeeper:
+  ## @param externalZookeeper.servers List of external zookeeper servers to use
+  ## @param externalZookeeper.port Port of the Zookeeper servers
+  ##
+  servers: []
+  port: 2181
+
+## @section Zookeeper subchart parameters
+##
+## @param zookeeper.enabled Deploy Zookeeper subchart
+## @param zookeeper.replicaCount Number of Zookeeper instances
+## @param zookeeper.service.ports.client Zookeeper client port
+##
+zookeeper:
+  enabled: true
+  replicaCount: 3
+  persistence:
+    enabled: false
+  service:
+    ports:
+      client: 2181
+  auth:
+    enabled: false
+  allowAnonymousLogin: true
