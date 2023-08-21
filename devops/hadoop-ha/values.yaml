@@ -15,8 +15,11 @@ antiAffinity: "soft"
 
 hdfs:
   nameNode:
-    replicas: 2
+    replicas: 3
     pdbMinAvailable: 2
+
+    # Create statefulsets in parallel (K8S 1.7+)
+    parallelCreate: true
     
     resources:
       requests:

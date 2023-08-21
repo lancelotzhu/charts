@@ -17,6 +17,9 @@ spec:
       app.kubernetes.io/component: hdfs-nn
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn
   replicas: {{ .Values.hdfs.nameNode.replicas }}
+{{- if .Values.hdfs.nameNode.parallelCreate }}
+  podManagementPolicy: Parallel
+{{- end }}
   template:
     metadata:
       labels:
