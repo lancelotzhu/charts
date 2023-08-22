@@ -4,6 +4,7 @@ This chart is modified from [pfisterer/apache-hadoop-helm](https://github.com/pf
 
 - supprot hadoop high availability cluster.
 - upgrade hadoop version from 3.3.2 to 3.3.6.
+- add hive version 3.1.3.
 
 ## Chart Details
 

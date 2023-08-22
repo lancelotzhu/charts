@@ -1,3 +1,6 @@
+## @section Hadoop Parameters
+##
+
 image:
   repository: lancelotzhu/hadoop
   tag: 3.3.6
@@ -88,3 +91,8 @@ persistence:
     storageClass: "-"
     accessMode: ReadWriteOnce
     size: 200Gi
+
+## @section hive paramaters
+##
+hive:
+  enabled: true
