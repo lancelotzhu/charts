@@ -7,6 +7,66 @@ metadata:
     helm.sh/chart: {{ include "hadoop.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
+  bootstrap.sh: |
+    #!/bin/bash -x
+
+    echo Starting
+
+    : ${HADOOP_HOME:=/opt/hadoop}
+
+    echo Using ${HADOOP_HOME} as HADOOP_HOME
+
+    . $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+
+    : ${HIVE_HOME:=/opt/hive}
+
+    echo Using ${HIVE_HOME} as HIVE_HOME
+
+    # ------------------------------------------------------
+    # Directory to find config artifacts
+    # ------------------------------------------------------
+
+    CONFIG_DIR="/tmp/hive-config"
+
+    # ------------------------------------------------------
+    # Copy config files from volume mount
+    # ------------------------------------------------------
+
+    for f in hive-env.sh hive-site.xml; do
+      if [[ -e ${CONFIG_DIR}/$f ]]; then
+        cp ${CONFIG_DIR}/$f $HIVE_HOME/conf/$f
+      else
+        echo "ERROR: Could not find $f in $CONFIG_DIR"
+        exit 1
+      fi
+    done
+
+    # ------------------------------------------------------
+    # Start METASTORE
+    # ------------------------------------------------------
+    if [[ "${HOSTNAME}" =~ "hive-metastore" ]]; then
+      mkdir -p /user/hive/warehouse
+      cd ${HIVE_HOME}
+      if [ ! -f /user/hive/warehouse/formated ]; then
+        # Only format if necessary
+        $HIVE_HOME/bin/schematool -dbType derby -initSchema && echo 1 > /user/hive/warehouse/formated
+      fi
+    fi
+
+    # ------------------------------------------------------
+    # Tail logfiles for daemonized workloads (parameter -d)
+    # ------------------------------------------------------
+    if [[ $1 == "-d" ]]; then
+      until find ${HADOOP_HOME}/logs -mmin -1 | egrep -q '.*'; echo "`date`: Waiting for logs..." ; do sleep 2 ; done
+      tail -F ${HADOOP_HOME}/logs/* &
+      while true; do sleep 1000; done
+    fi
+
+  hive-env.sh: |
+    export HADOOP_HOME=/opt/hadoop
+    export HIVE_CONF_DIR=/opt/hive/conf
+    export HIVE_AUX_JARS_PATH=/opt/hive/lib
+
   hive-site.xml: |
     <?xml version="1.0"?>
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
@@ -16,30 +76,28 @@ data:
         <value>/user/hive/warehouse</value>
       </property>
 
+      <property>  
+        <name>javax.jdo.option.ConnectionURL</name>  
+        <value>jdbc:derby:;databaseName=metastore_db;create=true</value>  
+      </property>  
+
+      <property>  
+        <name>javax.jdo.option.ConnectionDriverName</name>  
+        <value>org.apache.derby.jdbc.EmbeddedDriver</value>  
+      </property>  
+
       <property>
         <name>hive.metastore.local</name>
-        <value>false</value>
+        <value>true</value>
       </property>
 
       <property>
-        <name>hive.metastore.schema.verification</name>
-        <value>false</value>
+        <name>datanucleus.schema.autoCreateAll</name>
+        <value>true</value>
       </property>
 
       <property>
-        <name>system:user.name</name>
-        <value>root</value>
-        <description>user name</description>
-      </property>
-
-      <property>
-        <name>hive.metastore.uris</name>
-        <value>thrift://{{ include "hadoop.fullname" . }}-hive-metastore.{{ .Release.Namespace }}.svc.cluster.local:9083</value>
-      </property>
-
-      <property>
-        <name>hive.server2.thrift.bind.host</name>
-        <value>0.0.0.0</value>
-        <description>Bind host on which to run the HiveServer2 Thrift service.</description>
+        <name>hive.server2.authentication</name>
+        <value>NONE</value>
       </property>
     </configuration>
