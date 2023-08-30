@@ -60,16 +60,16 @@ spec:
            - "-d"
         resources:
 {{ toYaml .Values.hive.metastore.resources | indent 10 }}
-        readinessProbe:
-          tcpSocket:
-            port: 10000
-          initialDelaySeconds: 60
-          timeoutSeconds: 2
-        livenessProbe:
-          tcpSocket:
-            port: 10000
-          initialDelaySeconds: 60
-          timeoutSeconds: 2
+        # readinessProbe:
+        #   tcpSocket:
+        #     port: 10000
+        #   initialDelaySeconds: 60
+        #   timeoutSeconds: 2
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: 10000
+        #   initialDelaySeconds: 60
+        #   timeoutSeconds: 2
         volumeMounts:
         - name: hive-config
           mountPath: /tmp/hive-config
