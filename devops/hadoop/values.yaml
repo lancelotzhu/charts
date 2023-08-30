@@ -95,4 +95,11 @@ persistence:
 ## @section hive paramaters
 ##
 hive:
-  enabled: true
+  metastore:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"

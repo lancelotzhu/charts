@@ -11,9 +11,8 @@ metadata:
 spec:
   ports:
   - name: metastore
-    port: {{ .Values.service.hive.metastore.port }}
-    nodePort: {{ .Values.service.hive.metastore.nodePort }}
-  type: {{ .Values.service.hive.metastore.type }}
+    port: 10000
+  clusterIP: None
   selector:
     app.kubernetes.io/name: {{ include "hadoop.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

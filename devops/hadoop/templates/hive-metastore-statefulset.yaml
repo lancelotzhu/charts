@@ -16,7 +16,7 @@ spec:
       app.kubernetes.io/name: {{ include "hadoop.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: hive-metastore
-  replicas: {{ .Values.hive.metastore.replicas }}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -49,7 +49,7 @@ spec:
       initContainers:
       - name: wait-nn
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ['sh', '-c', "until curl -m 3 -sI http://{{ include "hadoop.fullname" . }}-hdfs-nn-{{ sub .Values.hdfs.nameNode.replicas 1 }}.{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870 | egrep --silent 'HTTP/1.1 200 OK|HTTP/1.1 302 Found'; do echo waiting for nn; sleep 1; done"]
+        command: ['sh', '-c', "until curl -m 3 -sI http://{{ include "hadoop.fullname" . }}-hdfs-nn.{{ .Release.Namespace }}.svc.cluster.local:9870 | egrep --silent 'HTTP/1.1 200 OK|HTTP/1.1 302 Found'; do echo waiting for nn; sleep 1; done"]
       containers:
       - name: hive-metastore
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -73,9 +73,6 @@ spec:
         volumeMounts:
         - name: hive-config
           mountPath: /tmp/hive-config
-        securityContext:
-          runAsUser: {{ .Values.securityContext.runAsUser }}
-          privileged: {{ .Values.securityContext.privileged }}
       volumes:
       - name: hadoop-config
         configMap:
