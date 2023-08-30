@@ -57,22 +57,14 @@ data:
     # Tail logfiles for daemonized workloads (parameter -d)
     # ------------------------------------------------------
     if [[ $1 == "-d" ]]; then
-      until find /user/hive/warehouse -mmin -1 | egrep -q '.*'; echo "`date`: Waiting for logs..." ; do sleep 2 ; done
-      tail -F /user/hive/warehouse/* &
-      while true; do sleep 1000; done
-    fi
-
-    # ------------------------------------------------------
-    # Start bash if requested (parameter -bash)
-    # ------------------------------------------------------
-    if [[ $1 == "-bash" ]]; then
-      /bin/bash
+      $HIVE_HOME/bin/hiveserver2
     fi
 
   hive-env.sh: |
     export HADOOP_HOME=/opt/hadoop
     export HIVE_CONF_DIR=/opt/hive/conf
     export HIVE_AUX_JARS_PATH=/opt/hive/lib
+    export HADOOP_HEAPSIZE=1024
 
   hive-site.xml: |
     <?xml version="1.0"?>
