@@ -63,12 +63,12 @@ spec:
         readinessProbe:
           tcpSocket:
             port: 10000
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           timeoutSeconds: 2
         livenessProbe:
           tcpSocket:
             port: 10000
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           timeoutSeconds: 2
         volumeMounts:
         - name: hive-config
