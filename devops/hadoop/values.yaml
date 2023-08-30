@@ -73,10 +73,10 @@ yarn:
     # This should be tuned to fit your workload.
     resources:
       requests:
-        memory: "2048Mi"
+        memory: "4096Mi"
         cpu: "1000m"
       limits:
-        memory: "2048Mi"
+        memory: "4096Mi"
         cpu: "1000m"
 
 persistence:
