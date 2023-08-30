@@ -46,7 +46,7 @@ data:
     # ------------------------------------------------------
     if [[ "${HOSTNAME}" =~ "hive-metastore" ]]; then
       mkdir -p /user/hive/warehouse
-      cd ${HIVE_HOME}
+      cd /user/hive/warehouse
       if [ ! -f /user/hive/warehouse/formated ]; then
         # Only format if necessary
         $HIVE_HOME/bin/schematool -dbType derby -initSchema && echo 1 > /user/hive/warehouse/formated

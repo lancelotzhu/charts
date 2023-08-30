@@ -18,6 +18,7 @@ ENV HADOOP_COMMON_HOME=${HADOOP_HOME} \
 RUN sed -i "s@http://\(deb\|security\).debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list
 RUN apt update \
     && apt -y install curl \
+    && apt -y install procps \
     && apt -y install tzdata \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && rm -rf /var/lib/apt/lists/*
