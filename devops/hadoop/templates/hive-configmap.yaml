@@ -50,6 +50,7 @@ data:
       if [ ! -f /user/hive/warehouse/formated ]; then
         # Only format if necessary
         $HIVE_HOME/bin/schematool -dbType derby -initSchema && echo 1 > /user/hive/warehouse/formated
+        echo "alias beeline='beeline -u jdbc:hive2://$HOSTNAME:10000'" >> /root/.bashrc
       fi
     fi
 

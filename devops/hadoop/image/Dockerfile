@@ -31,6 +31,11 @@ RUN ln -s /opt/hadoop-${HADOOP_VERSION} ${HADOOP_HOME}
 RUN curl --silent --output /tmp/hive.tgz https://mirrors.tuna.tsinghua.edu.cn/apache/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz && tar --directory /opt -xzf /tmp/hive.tgz && rm /tmp/hive.tgz
 RUN ln -s /opt/apache-hive-${HIVE_VERSION}-bin ${HIVE_HOME}
 
+# turn on shell alias
+RUN sed -i "s@# export@export@g" /root/.bashrc
+RUN sed -i "s@# eval@export@g" /root/.bashrc
+RUN sed -i "s@# alias@export@g" /root/.bashrc
+
 WORKDIR /opt
 
 # Hdfs ports
