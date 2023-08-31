@@ -56,6 +56,9 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
            - "/bin/bash"
+           - "/tmp/hadoop-config/bootstrap.sh"
+           - ";"
+           - "/bin/bash"
            - "/tmp/hive-config/bootstrap.sh"
            - "-d"
         resources:
@@ -71,6 +74,8 @@ spec:
         #   initialDelaySeconds: 60
         #   timeoutSeconds: 2
         volumeMounts:
+        - name: hadoop-config
+          mountPath: /tmp/hadoop-config
         - name: hive-config
           mountPath: /tmp/hive-config
         - name: warehouse
