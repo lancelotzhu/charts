@@ -44,7 +44,7 @@ data:
     # ------------------------------------------------------
     # Start METASTORE
     # ------------------------------------------------------
-    if [[ "${HOSTNAME}" =~ "hive-metastore" ]]; then
+    if [[ "${HOSTNAME}" =~ "hive-ms" ]]; then
       mkdir -p /user/hive/warehouse
       cd /user/hive/warehouse
       if [ ! -f /user/hive/warehouse/formated ]; then

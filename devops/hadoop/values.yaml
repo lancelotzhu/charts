@@ -94,8 +94,14 @@ persistence:
 
 ## @section hive paramaters
 ##
+  metaStore:
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 50Gi
+
 hive:
-  metastore:
+  metaStore:
     resources:
       requests:
         memory: "256Mi"
