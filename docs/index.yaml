@@ -3,11 +3,11 @@ entries:
   hadoop:
   - apiVersion: v1
     appVersion: 3.3.6
-    created: "2023-08-31T16:10:36.0600424+08:00"
+    created: "2023-08-31T16:13:59.8887659+08:00"
     description: The Apache Hadoop software library is a framework that allows for
       the distributed processing of large data sets across clusters of computers using
       simple programming models.
-    digest: fb06148a2b2719e65495d57b3f74a0cbf7acc892ae5877e7108343b64ae5309c
+    digest: 7a25305f39d15131a7c5d5a5cbedb4364fb6985a729a0236b4fabf5b6816393b
     home: https://hadoop.apache.org/
     icon: http://hadoop.apache.org/images/hadoop-logo.jpg
     maintainers:
@@ -24,11 +24,11 @@ entries:
   hadoop-ha:
   - apiVersion: v1
     appVersion: 3.3.6
-    created: "2023-08-31T16:10:36.064624+08:00"
+    created: "2023-08-31T16:13:59.8937193+08:00"
     description: The Apache Hadoop software library is a framework that allows for
       the distributed processing of large data sets across clusters of computers using
       simple programming models.
-    digest: bb07276c4f50873d15ea4cc71ee9a789c9c68b950214a07c08abcaf4b29c969b
+    digest: d64f3097fcadbc7493a16c4a7f5103b05428d7b01e1e8d01793bd09d25a27368
     home: https://hadoop.apache.org/
     icon: http://hadoop.apache.org/images/hadoop-logo.jpg
     maintainers:
@@ -42,4 +42,4 @@ entries:
     urls:
     - https://lancelotzhu.github.io/charts/hadoop-ha-1.0.0.tgz
     version: 1.0.0
-generated: "2023-08-31T16:10:36.0587692+08:00"
+generated: "2023-08-31T16:13:59.8868505+08:00"
